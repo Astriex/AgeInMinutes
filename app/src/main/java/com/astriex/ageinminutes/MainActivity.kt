@@ -31,23 +31,27 @@ class MainActivity : AppCompatActivity() {
         val month = myCalendar.get(Calendar.MONTH)
         val dayOfMonth = myCalendar.get(Calendar.DAY_OF_MONTH)
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            val dpd = DatePickerDialog(
-                this,
-                DatePickerDialog.OnDateSetListener { _, selectedYear, selectedMonth, selectedDayOfMonth ->
-                    val differenceInMinutes =
-                        calculateAgeInMinutes(selectedDayOfMonth, selectedMonth, selectedYear)
-                    binding.tvSelectedDateInMinutes.text = differenceInMinutes.toString()
-                },
-                year,
-                month,
-                dayOfMonth
-            )
-            // added to avoid getting negative value of age in minutes
-            dpd.datePicker.maxDate = Date().time - 86400000 // miliseconds of one day
-            dpd.show()
-        }
+        val dpd = createDatePickerDialog(year, month, dayOfMonth)
+        // added to avoid getting negative value of age in minutes
+        dpd.datePicker.maxDate = Date().time - 86400000 // miliseconds of one day
+        dpd.show()
     }
+
+    private fun createDatePickerDialog(
+        year: Int,
+        month: Int,
+        dayOfMonth: Int
+    ) = DatePickerDialog(
+        this,
+        DatePickerDialog.OnDateSetListener { _, selectedYear, selectedMonth, selectedDayOfMonth ->
+            val differenceInMinutes =
+                calculateAgeInMinutes(selectedDayOfMonth, selectedMonth, selectedYear)
+            binding.tvSelectedDateInMinutes.text = differenceInMinutes.toString()
+        },
+        year,
+        month,
+        dayOfMonth
+    )
 
     private fun calculateAgeInMinutes(
         selectedDayOfMonth: Int,
